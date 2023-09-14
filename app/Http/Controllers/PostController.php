@@ -11,10 +11,9 @@ class PostController extends Controller
     {
         $this->post = $post;
     }
-
-    public function index()
-    {
-        dd($this->post->getAllPosts());
-        return Inertia::render('Post/index', $this->post->getAllPosts());
+    public function index(){
+        return Inertia::render('Post/Post',[
+            'props'=>$this->post->getAllPosts()
+        ] );
     }
 }
