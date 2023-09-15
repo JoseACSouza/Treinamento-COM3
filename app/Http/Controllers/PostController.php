@@ -22,7 +22,7 @@ class PostController extends Controller
     }
 
     public function deletePost(Request $request) {
-        $request = Post::find($request->id);
+        $request = Post::find(($request->id));
         $request->delete();
         return redirect()->back();
     }
@@ -33,6 +33,15 @@ class PostController extends Controller
             Post::create($data);
             return redirect()->back();
         }
+        return redirect()->back();
+    }
+
+    public function updatePost(FormRequestPost $request) {
+        if($request->method() == 'PUT') {
+            Post::find($request->id)->update($request->all());
+            return redirect()->back();
+        }
+        return redirect()->back();
     }
 
 }

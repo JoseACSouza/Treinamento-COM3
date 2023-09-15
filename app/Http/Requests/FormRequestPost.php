@@ -21,10 +21,14 @@ class FormRequestPost extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'subject'=>['required','string'],
-            'content'=>['required','string'],
-            'users_id'=>['required'],
-        ];
+        $request = [];
+        if($this->method() == "POST"|| $this->method() == "PUT") {
+            $request = [
+                'subject'=>['required','string'],
+                'content'=>['required','string'],
+                'users_id'=>['required'],
+            ];
+        }
+        return $request;
     }
 }

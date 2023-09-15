@@ -32,4 +32,8 @@ class Post extends Model
         return $allPosts;
     }
 
+    public function findPost($id) {
+        $post= Post::find($id)->get();
+        return $post;
+    }
 }

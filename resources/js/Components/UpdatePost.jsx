@@ -1,13 +1,14 @@
 import { useState, } from "react";
-import { router } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import TextInput from "./TextInput";
 
-export default ({auth})=>{
-
+export default ({previous})=>{
+    const { subject, content, user, id } = previous;
     const [values, setValues] = useState({
-        subject: "",
-        content: "",
-        users_id: auth.user.id,
+        id: id,
+        subject: subject,
+        content: content,
+        users_id: user.id,
       })
 
     function handleChange(e) {
@@ -21,12 +22,12 @@ export default ({auth})=>{
 
       function handleSubmit(e) {
         e.preventDefault();
-        router.post('post/new', values);
-        setValues({
-            subject: "",
-            content: "",
-            users_id: auth.user.id,
-          });
+        router.put('post', values);
+        cancelar();
+      }
+
+      function cancelar(){
+        router.get('news');
       }
 
     return(
@@ -35,7 +36,7 @@ export default ({auth})=>{
                 <div className="flex flex-col item-start ">
                 <TextInput
                     className="max-w-xs bg-transparent text-sm read-only border-0"
-                    value={ auth.user.name }
+                    value={ user.name }
                     disabled
                 />
                 <TextInput
@@ -54,11 +55,20 @@ export default ({auth})=>{
                         value={ values.content }
                         id="content"
                         />
+                        <div className="flex flex-row self-end">
+
+                    <button
+                        type="button"
+                        className="pointer-events-auto rounded-md bg-cyan-600 px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-indigo-500 mr-2 w-20 "
+                        onClick={cancelar}
+                        > Cancelar
+                    </button>
                     <button
                         type="submit"
                         className="pointer-events-auto rounded-md bg-cyan-600 px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-indigo-500 mr-2 w-20 self-end"
-                        > Postar
+                        > Editar
                     </button>
+                    </div>
                 </div>
             </form>
         </div>

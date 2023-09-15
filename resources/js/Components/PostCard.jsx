@@ -3,9 +3,11 @@ import { useForm } from "@inertiajs/react";
 import DangerButton from "./DangerButton";
 import Modal from "./Modal";
 import SecondaryButton from "./SecondaryButton";
+import UpdatePost from "./UpdatePost";
 
 export default (postInfo) => {
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
+    const [confirmingUserUpdation, setConfirmingUserUpdation] = useState(false);
     const { id, subject, content, owner, user, ownerId } = postInfo;
 
     const {
@@ -32,12 +34,23 @@ export default (postInfo) => {
 
         reset();
     };
+    const handleUpdate = (e) => {
+        e.preventDefault();
+        setConfirmingUserUpdation(true);
+
+        reset();
+    };
+
     const confirmUserDeletion = () => {
         setConfirmingUserDeletion(true);
     };
-    console.log(postInfo);
+
+    console.log(confirmingUserUpdation);
  return (
-    <div className="bg-sky-500/20 rounded-lg p-3 m-3">
+     <div className="bg-sky-500/20 rounded-lg p-3 m-3">
+     {confirmingUserUpdation ? <UpdatePost
+                    previous={postInfo}
+                /> : <>
         <div>
             <h2 className="text-sm">{ owner }</h2>
             <div className="flex justify-between items-end">
@@ -45,10 +58,13 @@ export default (postInfo) => {
                 { (owner === user.name && ownerId == user.id) ?
                     <div className=" flex justify-end">
                         <button
+                        type="type"
                             className="pointer-events-auto rounded-md bg-cyan-600 px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-indigo-500 mr-2"
+                            onClick={handleUpdate}
                             > Editar
                         </button>
                         <button
+                        type="submit"
                             className="pointer-events-auto rounded-md bg-red-600 px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-indigo-500"
                             onClick={confirmUserDeletion}
                             > Delete
@@ -71,6 +87,8 @@ export default (postInfo) => {
                 </div>
             </form>
         </Modal>
+        </>
+    }
     </div>
  )
 }
