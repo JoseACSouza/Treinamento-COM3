@@ -11,16 +11,24 @@ class Post extends Model
     protected $fillable = [
         'subject',
         'content',
-        'user_id',
+        'users_id',
     ];
 
     public function owner()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'users_id');
     }
 
     public function getAllPosts(){
-        $allPosts = $this->get();
+        $allPosts = Post::all()->map(function ($post){
+            return [
+                'id'=>$post->id,
+                'subject'=>$post->subject,
+                'content'=>$post->content,
+                'postOwner'=>$post->owner->name,
+                'ownerId'=>$post->users_id,
+            ];
+        });
         return $allPosts;
     }
 

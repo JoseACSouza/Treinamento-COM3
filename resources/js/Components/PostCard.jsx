@@ -1,18 +1,76 @@
-export default ({...props}) => {
+import { useState, } from "react";
+import { useForm } from "@inertiajs/react";
+import DangerButton from "./DangerButton";
+import Modal from "./Modal";
+import SecondaryButton from "./SecondaryButton";
+
+export default (postInfo) => {
+    const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
+    const { id, subject, content, owner, user, ownerId } = postInfo;
+
+    const {
+        data,
+        setData,
+        delete: destroy,
+        processing,
+        reset,
+        errors,
+    } = useForm();
+
+    const deletePost = (e) => {
+        e.preventDefault();
+        data.id=id;
+        destroy(route('post.destroy'), {
+            preserveScroll: true,
+            onSuccess: () => closeModal(),
+            onError: () => <p>Woops! Ocorreu algum erro na exclusão do Post</p>,
+            onFinish: () => reset(),
+        });
+    };
+    const closeModal = () => {
+        setConfirmingUserDeletion(false);
+
+        reset();
+    };
+    const confirmUserDeletion = () => {
+        setConfirmingUserDeletion(true);
+    };
+    console.log(postInfo);
  return (
-    <div>
-        <h5>{ owner }</h5>
+    <div className="bg-sky-500/20 rounded-lg p-3 m-3">
         <div>
-            <h3>{ subject }</h3>
-            {owner === user ?
-            <div>
-                <button> Edit </button>
-                <button> Delete </button>
+            <h2 className="text-sm">{ owner }</h2>
+            <div className="flex justify-between items-end">
+                <h1 className="font-bold text-xl block">{ subject }</h1>
+                { (owner === user.name && ownerId == user.id) ?
+                    <div className=" flex justify-end">
+                        <button
+                            className="pointer-events-auto rounded-md bg-cyan-600 px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-indigo-500 mr-2"
+                            > Editar
+                        </button>
+                        <button
+                            className="pointer-events-auto rounded-md bg-red-600 px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-indigo-500"
+                            onClick={confirmUserDeletion}
+                            > Delete
+                        </button>
+                    </div>
+                : <></> }
             </div>
-            : <></>
-            }
         </div>
-        <p>{ content }</p>
+        <p className="my-3">{ content }</p>
+        <Modal show={confirmingUserDeletion} onClose={closeModal}>
+            <form onSubmit={deletePost} className="p-6" name="param">
+                <h2 className="text-lg font-medium text-gray-900">
+                    Tem certeza que deseja apagar este post?
+                    </h2>
+                <div className="mt-6 flex justify-end">
+                    <SecondaryButton onClick={closeModal}>Melhor não!</SecondaryButton>
+                    <DangerButton className="ml-3" disabled={processing}>
+                        Sim, delete-o!
+                    </DangerButton>
+                </div>
+            </form>
+        </Modal>
     </div>
  )
 }

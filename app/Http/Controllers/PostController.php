@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FormRequestPost;
 use App\Models\Post;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class PostController extends Controller
@@ -11,9 +14,28 @@ class PostController extends Controller
     {
         $this->post = $post;
     }
-    public function index(){
+
+    public function index() {
         return Inertia::render('Post/Post',[
-            'props'=>$this->post->getAllPosts()
+            'posts'=> [ $this->post->getAllPosts() ],
         ] );
     }
+
+    public function deletePost(Request $request) {
+        $request = Post::find($request->id);
+        $request->delete();
+        return redirect()->back();
+    }
+
+    public function newPost(FormRequestPost $request) {
+        if($request->method() == 'POST') {
+            $data = $request->all();
+            Post::create($data);
+            return redirect()->back();
+        }
+    }
+
 }
+
+
+

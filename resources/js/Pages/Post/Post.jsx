@@ -1,31 +1,34 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import PostCard from '@/Components/PostCard';
+import NewPost from '@/Components/NewPost';
 
-export default function Post({ auth, props}) {
+export default function Post({ auth, posts}) {
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Posts</h2>}
         >
             <Head title="Post" />
-            <div className="py-12">
+            <NewPost auth={auth}/>
+            <div className="py-4">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                        <div className="p-6 text-gray-900">Post Page</div>
-                        { props.map((...post)=>{
-                            return (
-                                <PostCard
+                        {
+                        posts[0].map((post, index)=>{
+                            const { id, subject, content, postOwner, ownerId } = post;                            return(
+                            <PostCard
+                                key={ index }
                                 subject={ subject }
                                 content={ content }
-                                owner = { owner }
-                                user = { auth.user.name }
-                            />
-                            );
+                                owner = { postOwner }
+                                user = { auth.user }
+                                id= { id }
+                                ownerId={ ownerId }
+                            />)
                         }) }
                     </div>
                 </div>
         </AuthenticatedLayout>
     );
 }
-
 

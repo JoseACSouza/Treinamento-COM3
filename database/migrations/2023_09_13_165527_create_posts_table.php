@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
-            $table->id();
+            $table->id('id');
             $table->string('subject');
             $table->text('content');
             $table->foreignId('users_id')->constrained('users');
