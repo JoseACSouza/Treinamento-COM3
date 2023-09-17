@@ -4,36 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Post extends Model
 {
     use HasFactory;
+
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+
     protected $fillable = [
         'subject',
         'content',
         'users_id',
     ];
 
-    public function owner()
+    public function owner() : BelongsTo
     {
         return $this->belongsTo(User::class, 'users_id');
     }
 
-    public function getAllPosts(){
-        $allPosts = Post::all()->map(function ($post){
-            return [
-                'id'=>$post->id,
-                'subject'=>$post->subject,
-                'content'=>$post->content,
-                'postOwner'=>$post->owner->name,
-                'ownerId'=>$post->users_id,
-            ];
-        });
-        return $allPosts;
-    }
-
-    public function findPost($id) {
-        $post= Post::find($id)->get();
-        return $post;
-    }
 }

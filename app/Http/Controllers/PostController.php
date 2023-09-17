@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FormRequestPost;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -17,7 +18,7 @@ class PostController extends Controller
 
     public function index() {
         return Inertia::render('Post/Post',[
-            'posts'=> [ $this->post->getAllPosts() ],
+            'posts'=> Post::with('owner')->get()->toArray(),
         ] );
     }
 

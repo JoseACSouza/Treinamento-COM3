@@ -1,9 +1,10 @@
-import { useState, } from "react";
+import { useState } from "react";
 import { useForm } from "@inertiajs/react";
 import DangerButton from "./DangerButton";
 import Modal from "./Modal";
 import SecondaryButton from "./SecondaryButton";
 import UpdatePost from "./UpdatePost";
+import ButtonCard from "./ButtonCard";
 
 export default (postInfo) => {
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
@@ -12,11 +13,9 @@ export default (postInfo) => {
 
     const {
         data,
-        setData,
         delete: destroy,
         processing,
         reset,
-        errors,
     } = useForm();
 
     const deletePost = (e) => {
@@ -44,8 +43,6 @@ export default (postInfo) => {
     const confirmUserDeletion = () => {
         setConfirmingUserDeletion(true);
     };
-
-    console.log(confirmingUserUpdation);
  return (
      <div className="bg-sky-500/20 rounded-lg p-3 m-3">
      {confirmingUserUpdation ? <UpdatePost
@@ -57,18 +54,18 @@ export default (postInfo) => {
                 <h1 className="font-bold text-xl block">{ subject }</h1>
                 { (owner === user.name && ownerId == user.id) ?
                     <div className=" flex justify-end">
-                        <button
-                        type="type"
-                            className="pointer-events-auto rounded-md bg-cyan-600 px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-indigo-500 mr-2"
+                        <ButtonCard
+                            type="button"
+                            className="bg-cyan-600 mr-2"
                             onClick={handleUpdate}
                             > Editar
-                        </button>
-                        <button
-                        type="submit"
-                            className="pointer-events-auto rounded-md bg-red-600 px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-indigo-500"
+                        </ButtonCard>
+                        <ButtonCard
+                            type="submit"
+                            className="bg-red-600"
                             onClick={confirmUserDeletion}
                             > Delete
-                        </button>
+                        </ButtonCard>
                     </div>
                 : <></> }
             </div>

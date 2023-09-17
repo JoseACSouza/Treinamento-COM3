@@ -1,64 +1,59 @@
-import { useState, } from "react";
-import { router } from "@inertiajs/react";
+import { useForm } from "@inertiajs/react";
 import TextInput from "./TextInput";
+import ButtonCard from "./ButtonCard";
+import TextAreaInput from "./TextAreaInput";
+import InputLabel from "./InputLabel";
 
 export default ({auth})=>{
+    const { data, setData, post, errors, reset } = useForm({
+        'id': '',
+        'subject': '',
+        'content': '',
+        'users_id': auth.user.id,
+      });
 
-    const [values, setValues] = useState({
-        subject: "",
-        content: "",
-        users_id: auth.user.id,
-      })
-
-    function handleChange(e) {
-        const key = e.target.id;
-        const value = e.target.value
-        setValues(values => ({
-            ...values,
-            [key]: value,
-        }))
-      }
 
       function handleSubmit(e) {
         e.preventDefault();
-        router.post('post/new', values);
-        setValues({
-            subject: "",
-            content: "",
-            users_id: auth.user.id,
-          });
+        post('post/new');
+        reset();
       }
 
     return(
-        <div className="bg-sky-500/20 rounded-lg p-3 m-3 h-72">
+        <div className="bg-sky-500/20 rounded-lg p-3 m-3 h-76">
             <form onSubmit={handleSubmit}>
                 <div className="flex flex-col item-start ">
                 <TextInput
-                    className="max-w-xs bg-transparent text-sm read-only border-0"
+                    className="max-w-xs bg-transparent text-sm read-only border-0 p-0 "
                     value={ auth.user.name }
                     disabled
                 />
-                <TextInput
+                <InputLabel className="flex flex-col my-2"> Título:
+                    <TextInput
                     className="max-w-md bg-[#FFFFFF]/60 text-sm font-bold text-xl"
-                    placeholder="Título"
-                    onChange={handleChange}
-                    value={ values.subject }
+                    placeholder="Escreva um título para seu post"
+                    onChange={e => setData('subject', e.target.value)}
+                    value={ data.subject }
                     id="subject"
                 />
+                </InputLabel>
+                {errors.subject && <div>{errors.subject}</div>}
                 </div>
                 <div className="flex flex-col">
-                    <textarea
-                        className="resize-none min-w-fit text-md h-32 my-2 border-0 bg-[#FFFFFF]/60"
-                        placeholder="Escreva algo legal"
-                        onChange={handleChange}
-                        value={ values.content }
-                        id="content"
+                    <InputLabel className="flex flex-col"> Conteúdo do post:
+                        <TextAreaInput
+                            placeholder="Escreva algo legal"
+                            onChange={e => setData('content', e.target.value)}
+                            value={ data.content }
+                            id="content"
                         />
-                    <button
+                    </InputLabel>
+                    {errors.content && <div>{errors.content}</div>}
+                    <ButtonCard
                         type="submit"
-                        className="pointer-events-auto rounded-md bg-cyan-600 px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-indigo-500 mr-2 w-20 self-end"
+                        className="mr-2 w-20 bg-cyan-600 self-end"
                         > Postar
-                    </button>
+                    </ButtonCard>
                 </div>
             </form>
         </div>

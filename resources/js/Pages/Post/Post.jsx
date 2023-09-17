@@ -14,16 +14,17 @@ export default function Post({ auth, posts}) {
             <div className="py-4">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         {
-                        posts[0].map((post, index)=>{
-                            const { id, subject, content, postOwner, ownerId } = post;                            return(
+                        posts.map((post, index)=>{
+                            const { id, subject, content, owner } = post;
+                            return(
                             <PostCard
                                 key={ index }
                                 subject={ subject }
                                 content={ content }
-                                owner = { postOwner }
+                                owner = { owner.name }
                                 user = { auth.user }
                                 id= { id }
-                                ownerId={ ownerId }
+                                ownerId={ owner.id }
                             />)
                         }) }
                     </div>

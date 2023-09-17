@@ -1,37 +1,31 @@
-import { useState, } from "react";
-import { router, useForm } from "@inertiajs/react";
+import { useForm } from "@inertiajs/react";
 import TextInput from "./TextInput";
+import ButtonCard from "./ButtonCard";
+import TextAreaInput from "./TextAreaInput";
+import InputLabel from "./InputLabel";
 
 export default ({previous})=>{
     const { subject, content, user, id } = previous;
-    const [values, setValues] = useState({
+    const { data, setData, put, processing, errors, get } = useForm({
         id: id,
         subject: subject,
         content: content,
         users_id: user.id,
-      })
+      });
 
-    function handleChange(e) {
-        const key = e.target.id;
-        const value = e.target.value
-        setValues(values => ({
-            ...values,
-            [key]: value,
-        }))
-      }
 
       function handleSubmit(e) {
         e.preventDefault();
-        router.put('post', values);
+        put('post');
         cancelar();
       }
 
       function cancelar(){
-        router.get('news');
+        get('news');
       }
 
     return(
-        <div className="bg-sky-500/20 rounded-lg p-3 m-3 h-72">
+        <div className="bg-sky-500/20 rounded-lg p-3 m-3 h-76">
             <form onSubmit={handleSubmit}>
                 <div className="flex flex-col item-start ">
                 <TextInput
@@ -39,35 +33,43 @@ export default ({previous})=>{
                     value={ user.name }
                     disabled
                 />
-                <TextInput
+                <InputLabel className="flex flex-col my-2"> Título:
+                    <TextInput
                     className="max-w-md bg-[#FFFFFF]/60 text-sm font-bold text-xl"
-                    placeholder="Título"
-                    onChange={handleChange}
-                    value={ values.subject }
+                    placeholder="Escreva um título para seu post"
+                    onChange={e => setData('subject', e.target.value)}
+                    value={ data.subject }
                     id="subject"
                 />
+                </InputLabel>
+                {errors.subject && <div>{errors.subject}</div>}
                 </div>
                 <div className="flex flex-col">
-                    <textarea
-                        className="resize-none min-w-fit text-md h-32 my-2 border-0 bg-[#FFFFFF]/60"
-                        placeholder="Escreva algo legal"
-                        onChange={handleChange}
-                        value={ values.content }
-                        id="content"
+                    <InputLabel className="flex flex-col"> Conteúdo do post:
+                        <TextAreaInput
+                            placeholder="Escreva algo legal"
+                            onChange={e => setData('content', e.target.value)}
+                            value={ data.content }
+                            id="content"
                         />
-                        <div className="flex flex-row self-end">
+                    </InputLabel>
 
-                    <button
-                        type="button"
-                        className="pointer-events-auto rounded-md bg-cyan-600 px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-indigo-500 mr-2 w-20 "
-                        onClick={cancelar}
-                        > Cancelar
-                    </button>
-                    <button
-                        type="submit"
-                        className="pointer-events-auto rounded-md bg-cyan-600 px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-indigo-500 mr-2 w-20 self-end"
-                        > Editar
-                    </button>
+                    <div className="flex flex-row self-end">
+
+                        <ButtonCard
+                            type="button"
+                            className="bg-red-600 mr-2"
+                            onClick={cancelar}
+                        >
+                            Cancelar
+                        </ButtonCard>
+                        <ButtonCard
+                            type="submit"
+                            className="bg-cyan-600 self-end"
+                            disabled={processing}
+                        >
+                            Salvar
+                        </ButtonCard>
                     </div>
                 </div>
             </form>
