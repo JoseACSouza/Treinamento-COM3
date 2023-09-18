@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -41,6 +42,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/post/new', [PostController::class, 'newPost'])->name('post.new');
     Route::put('/post', [PostController::class, 'updatePost'])->name('post.update');
 
+
+
+    Route::resource('categories', CategoryController::class);
 });
 
 require __DIR__.'/auth.php';
