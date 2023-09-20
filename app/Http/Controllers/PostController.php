@@ -41,8 +41,11 @@ class PostController extends Controller
 
     public function updatePost(FormRequestPost $request) {
         if($request->method() == 'PUT') {
-            Post::find($request->id)->update($request->all());
-            return redirect()->back();
+            $data = $request;
+            $request = Post::find(($request->id));
+            $request->categories()->detach();
+            $request->update($data->all());
+            $request->categories()->attach($data->categories);
         }
         return redirect()->back();
     }

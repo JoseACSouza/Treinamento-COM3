@@ -26,6 +26,7 @@ export default function Post({ auth, posts, allCategories}) {
                                 id= { id }
                                 ownerId={ owner.id }
                                 categories={categories}
+                                allCategories={allCategories}
                             />)
                         }) }
                     </div>

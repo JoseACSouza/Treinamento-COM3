@@ -5,7 +5,6 @@ import Modal from "./Modal";
 import SecondaryButton from "./SecondaryButton";
 import UpdatePost from "./UpdatePost";
 import ButtonCard from "./ButtonCard";
-import smallCard from "./smallCard";
 
 export default (postInfo) => {
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
@@ -57,9 +56,9 @@ export default (postInfo) => {
                 <div className="flex justify-between" >
                 {
                     categories.map((item, index)=>
-                        <smallCard key={index} className=" bg-yellow-100 ml-2 px-2 py-1 text-xs rounded">
+                        <div key={index} className=" bg-yellow-100 ml-2 px-2 py-1 text-xs rounded">
                             {item.category}
-                        </smallCard>
+                        </div>
                     )
                 }
                 </div>

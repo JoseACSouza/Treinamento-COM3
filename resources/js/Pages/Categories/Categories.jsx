@@ -1,17 +1,8 @@
-import { Head } from "@inertiajs/react";
-import { useForm }from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import CategoryList from "./CategoryList";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import ButtonCard from "@/Components/ButtonCard";
 
 export default ({ auth, categories }) => {
-    const { get } = useForm();
-
-
-    const clickButton= (e) => {
-        e.preventDefault();
-        get('categories/create');
-    };
 
     return (
         <AuthenticatedLayout
@@ -19,12 +10,14 @@ export default ({ auth, categories }) => {
             header={
                 <div className="flex justify-between">
                     <h2 className="font-semibold text-xl text-gray-800 leading-tight">Categories</h2>
-                    <ButtonCard
-                        className="bg-cyan-600"
-                        onClick={clickButton}
-                    >
-                        Adicionar Categoria
-                    </ButtonCard>
+                    <Link
+                        href="categories/create"
+                        method="get"
+                        as="button"
+                        type="button"
+                        className="pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-indigo-500 bg-cyan-600">
+                            Adicionar Categoria
+                    </Link>
                 </div>
                 }
             >
