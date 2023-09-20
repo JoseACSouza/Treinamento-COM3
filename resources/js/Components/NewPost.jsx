@@ -1,17 +1,41 @@
 import { useForm } from "@inertiajs/react";
+import { useState } from "react";
 import TextInput from "./TextInput";
 import ButtonCard from "./ButtonCard";
 import TextAreaInput from "./TextAreaInput";
 import InputLabel from "./InputLabel";
+import Checkbox from "./Checkbox";
 
-export default ({auth})=>{
+
+export default ({auth, allCategories})=>{
     const { data, setData, post, errors, reset } = useForm({
         'id': '',
         'subject': '',
         'content': '',
         'users_id': auth.user.id,
-      });
+        'categories':[],
+    });
 
+    const [checkedState, setCheckedState] = useState(
+        new Array(allCategories.length).fill(false)
+    );
+
+    const handleOnChange = (position) => {
+        const updatedCheckedState = checkedState.map((item, index) =>
+          index === position ? !item : item
+        );
+
+        setCheckedState(updatedCheckedState);
+
+        const selectedCategories = updatedCheckedState.map((item, index)=>{
+            if (item) {
+                return allCategories[index].id;
+            }
+        }).filter((item)=> item!== undefined);
+
+        console.log(selectedCategories);
+        setData('categories', selectedCategories);
+      };
 
       function handleSubmit(e) {
         e.preventDefault();
@@ -37,7 +61,27 @@ export default ({auth})=>{
                     id="subject"
                 />
                 </InputLabel>
-                {errors.subject && <div>{errors.subject}</div>}
+                {errors.subject && <div className="text-red-400 text-sm">{errors.subject}</div>}
+                <div className="flex flex-col my-2 block font-medium text-sm text-gray-700"> Categorias:
+                    <div className="flex">
+                    {allCategories.map((category, index)=>{
+                        return(
+                            <InputLabel key={index} htmlFor={category.id} className="ml-2 flex justify-content">
+                                <Checkbox
+                                    id={category.id}
+                                    name={category.id}
+                                    value={category.id}
+                                    checked={checkedState[index]}
+                                    onChange={() => handleOnChange(index)}
+                                    className="mr-1 mt-0.5"
+                                />
+                                {category.category}
+                            </InputLabel>
+                        )
+                    })}
+                    </div>
+                    {errors.categories && <div className="text-red-400 text-sm">{errors.categories}</div>}
+                </div>
                 </div>
                 <div className="flex flex-col">
                     <InputLabel className="flex flex-col"> Conteúdo do post:
@@ -48,7 +92,7 @@ export default ({auth})=>{
                             id="content"
                         />
                     </InputLabel>
-                    {errors.content && <div>{errors.content}</div>}
+                    {errors.content && <div className="text-red-400 text-sm">{errors.content}</div>}
                     <ButtonCard
                         type="submit"
                         className="mr-2 w-20 bg-cyan-600 self-end"

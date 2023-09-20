@@ -27,6 +27,7 @@ class FormRequestPost extends FormRequest
                 'subject'=>['required','string'],
                 'content'=>['required','string'],
                 'users_id'=>['required'],
+                'categories'=>['required'],
             ];
         }
         return $request;

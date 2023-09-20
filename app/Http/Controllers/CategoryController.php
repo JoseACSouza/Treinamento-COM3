@@ -23,7 +23,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Categories/NewCategory',[]);
+        return Inertia::render('Categories/NewCategory');
     }
 
     /**
