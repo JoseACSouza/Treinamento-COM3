@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FormRequestPost;
+use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -18,12 +19,14 @@ class PostController extends Controller
 
     public function index() {
         return Inertia::render('Post/Post',[
-            'posts'=> Post::with('owner')->get()->toArray(),
+            'posts'=> Post::with('owner','categories')->get(),
+            'allCategories'=>Category::all(),
         ] );
     }
 
     public function deletePost(Request $request) {
         $request = Post::find(($request->id));
+        $request->categories()->detach();
         $request->delete();
         return redirect()->back();
     }
@@ -31,16 +34,18 @@ class PostController extends Controller
     public function newPost(FormRequestPost $request) {
         if($request->method() == 'POST') {
             $data = $request->all();
-            Post::create($data);
-            return redirect()->back();
+            Post::create($data)->categories()->attach($request->categories);
         }
         return redirect()->back();
     }
 
     public function updatePost(FormRequestPost $request) {
         if($request->method() == 'PUT') {
-            Post::find($request->id)->update($request->all());
-            return redirect()->back();
+            $data = $request;
+            $request = Post::find(($request->id));
+            $request->categories()->detach();
+            $request->update($data->all());
+            $request->categories()->attach($data->categories);
         }
         return redirect()->back();
     }

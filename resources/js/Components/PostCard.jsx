@@ -9,7 +9,7 @@ import ButtonCard from "./ButtonCard";
 export default (postInfo) => {
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
     const [confirmingUserUpdation, setConfirmingUserUpdation] = useState(false);
-    const { id, subject, content, owner, user, ownerId } = postInfo;
+    const { id, subject, content, owner, user, ownerId, categories } = postInfo;
 
     const {
         data,
@@ -51,7 +51,18 @@ export default (postInfo) => {
         <div>
             <h2 className="text-sm">{ owner }</h2>
             <div className="flex justify-between items-end">
+                <div className="flex flex-col">
                 <h1 className="font-bold text-xl block">{ subject }</h1>
+                <div className="flex justify-between" >
+                {
+                    categories.map((item, index)=>
+                        <div key={index} className=" bg-yellow-100 ml-2 px-2 py-1 text-xs rounded">
+                            {item.category}
+                        </div>
+                    )
+                }
+                </div>
+                </div>
                 { (owner === user.name && ownerId == user.id) ?
                     <div className=" flex justify-end">
                         <ButtonCard

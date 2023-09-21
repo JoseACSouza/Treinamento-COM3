@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FormRequestPost extends FormRequest
+class FormRequestCategories extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -21,15 +21,9 @@ class FormRequestPost extends FormRequest
      */
     public function rules(): array
     {
-        $request = [];
-        if($this->method() == "POST"|| $this->method() == "PUT") {
-            $request = [
-                'subject'=>['required','string'],
-                'content'=>['required','string'],
-                'users_id'=>['required'],
-                'categories'=>['required'],
-            ];
-        }
-        return $request;
+        return [
+            'category'=>['required','string'],
+        ];
+
     }
 }
