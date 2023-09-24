@@ -1,7 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import PostCard from '@/Components/PostCard';
-import NewPost from '@/Components/NewPost';
+import PostCard from './Partials/PostCard';
+import NewPost from './Partials/NewPost';
 
 export default function Post({ auth, posts, allCategories}) {
     return (
@@ -15,10 +15,11 @@ export default function Post({ auth, posts, allCategories}) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         {
                         posts.map((post, index)=>{
-                            const { id, subject, content, owner, categories } = post;
+                            const { id, subject, content, owner, categories, commentaries } = post;
                             return(
                             <PostCard
                                 key={ index }
+                                countCommentaries={commentaries.length}
                                 subject={ subject }
                                 content={ content }
                                 owner = { owner.name }
@@ -27,6 +28,7 @@ export default function Post({ auth, posts, allCategories}) {
                                 ownerId={ owner.id }
                                 categories={categories}
                                 allCategories={allCategories}
+                                selectPost ={false}
                             />)
                         }) }
                     </div>

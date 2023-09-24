@@ -1,10 +1,10 @@
 import { useForm } from "@inertiajs/react";
 import { useState } from "react";
-import TextInput from "./TextInput";
-import ButtonCard from "./ButtonCard";
-import TextAreaInput from "./TextAreaInput";
-import InputLabel from "./InputLabel";
-import Checkbox from "./Checkbox";
+import TextInput from "../../../Components/TextInput";
+import ButtonCard from "../../../Components/ButtonCard";
+import TextAreaInput from "../../../Components/TextAreaInput";
+import InputLabel from "../../../Components/InputLabel";
+import Checkbox from "../../../Components/Checkbox";
 
 export default ({previous})=>{
     const { subject, content, user, id, categories, allCategories } = previous;

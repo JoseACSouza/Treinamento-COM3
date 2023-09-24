@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentaryController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -38,6 +39,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/news', [PostController::class, 'index'])->name('post');
+    Route::get('/news/{id}', [PostController::class, 'show'])->name('post.show');
     Route::delete('/post/delete', [PostController::class, 'deletePost'])->name('post.destroy');
     Route::post('/post/new', [PostController::class, 'newPost'])->name('post.new');
     Route::put('/post', [PostController::class, 'updatePost'])->name('post.update');
@@ -45,6 +47,8 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('categories', CategoryController::class);
+
+    Route::resource('commentaries', CommentaryController::class);
 });
 
 require __DIR__.'/auth.php';

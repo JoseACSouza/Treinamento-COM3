@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FormRequestPost;
 use App\Models\Category;
+use App\Models\Commentary;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class PostController extends Controller
 
     public function index() {
         return Inertia::render('Post/Post',[
-            'posts'=> Post::with('owner','categories')->get(),
+            'posts'=> Post::with('owner', 'categories', 'commentaries')->get(),
             'allCategories'=>Category::all(),
         ] );
     }
@@ -37,6 +38,13 @@ class PostController extends Controller
             Post::create($data)->categories()->attach($request->categories);
         }
         return redirect()->back();
+    }
+
+    public function show($id){
+        return Inertia::render('Post/SelectedPost',[
+            'post'=> Post::with('owner', 'categories', 'commentaries.user')->get()->find($id),
+            'owners'=>Commentary::with('user')->get(),
+        ] );
     }
 
     public function updatePost(FormRequestPost $request) {

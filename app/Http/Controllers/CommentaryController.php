@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Commentary;
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CommentaryController extends Controller
 {
@@ -12,7 +15,6 @@ class CommentaryController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -20,7 +22,6 @@ class CommentaryController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -28,7 +29,10 @@ class CommentaryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+        Commentary::create($data);
+        $PostId = $request->post_id;
+        return to_route('post.show', $PostId);
     }
 
     /**
@@ -52,7 +56,7 @@ class CommentaryController extends Controller
      */
     public function update(Request $request, Commentary $commentary)
     {
-        //
+        Commentary::find($commentary->id)->update($request->all());
     }
 
     /**
@@ -60,6 +64,9 @@ class CommentaryController extends Controller
      */
     public function destroy(Commentary $commentary)
     {
-        //
+        $PostId = $commentary->post_id;
+        $commentary = Commentary::find($commentary->id);
+        $commentary->delete();
+        return to_route('post.show', $PostId);
     }
 }

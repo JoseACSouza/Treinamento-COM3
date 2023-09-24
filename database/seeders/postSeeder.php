@@ -11,9 +11,10 @@ class postSeeder extends Seeder
     public function run(): void
     {
         Post::create([
-            'subject'=>'Carros voadores',
-            'content'=>'Carros voadores são um sonho ultramodernista pós segunda guerra mundial, período onde carros e aviões eram populares. Então sempre esteve no imaginário das pessoas a união desses dois veículos',
+            'subject'=>'Juntos Rumo ao Sucesso',
+            'content'=>'Caros colaboradores da TechConnect Solutions,
+            Queremos expressar nossa profunda gratidão por fazerem parte da nossa equipe e contribuírem para o nosso sucesso contínuo. Sem cada um de vocês, nosso crescimento e conquistas não seriam possíveis.',
             'users_id'=>1,
-        ]);
+        ])->categories()->attach([1 , 3]);
     }
 }
