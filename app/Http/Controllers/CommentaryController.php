@@ -15,6 +15,7 @@ class CommentaryController extends Controller
      */
     public function index()
     {
+        // 
     }
 
     /**

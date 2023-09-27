@@ -23,12 +23,12 @@ class Post extends Model
         return $this->belongsTo(User::class, 'users_id');
     }
 
-    public function categories() :BelongsToMany
+    public function categories() : BelongsToMany
     {
         return $this->belongsToMany(Category::class);
     }
 
-    public function commentaries() :HasMany
+    public function commentaries() : HasMany
     {
         return $this->hasMany(Commentary::class);
     }
