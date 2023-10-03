@@ -6,8 +6,8 @@ import CommentCard from '../Commentaries/Partials/CommentCard';
 import ButtonCard from '@/Components/ButtonCard';
 import NewComment from '../Commentaries/Partials/NewComment';
 
-export default ({ auth, post }) => {
-    const { id, subject, content, owner, categories, commentaries } = post;
+export default ({ auth, post, commentaries }) => {
+    const { id, subject, content, owner, categories } = post;
     const [state, setState] = useState(false);
 
     const handleState = () => {
@@ -39,7 +39,6 @@ export default ({ auth, post }) => {
 
             {
                 commentaries.map((item, index) => {
-                    console.log(commentaries);
                     return (
                         <CommentCard
                             key={index}

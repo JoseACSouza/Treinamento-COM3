@@ -2,58 +2,68 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\PostRepository;
 use App\Http\Requests\FormRequestPost;
-use App\Models\Category;
-use App\Models\Commentary;
-use App\Models\Post;
-use App\Models\User;
+use App\Interfaces\RepositoriesInterface;
+use App\Repositories\CategoriesRepository;
+use App\Repositories\CommentariesRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class PostController extends Controller
 {
-    public function __construct(Post $post)
-    {
-        $this->post = $post;
+    private static function postRepository():PostRepository|RepositoriesInterface{
+        return new PostRepository;
     }
+
+    private static function commentariesRepository():CommentariesRepository|RepositoriesInterface{
+        return new CommentariesRepository;
+    }
+
+    private static function categoriesRepository():CategoriesRepository|RepositoriesInterface{
+        return new CategoriesRepository;
+    }
+
 
     public function index() {
         return Inertia::render('Post/Post',[
-            'posts'=> Post::with('owner', 'categories', 'commentaries')->get(),
-            'allCategories'=>Category::all(),
+            'posts'=> self::postRepository()->allWithEager(),
+            'allCategories'=>self::categoriesRepository()->all(),
+        ] );
+    }
+
+    public function filter(Request $request) {
+        return Inertia::render('Post/Post',[
+            'posts'=> self::postRepository()->allWithEager(),
+            'allCategories'=>self::categoriesRepository()->all(),
+            'filter'=>$request->all(),
         ] );
     }
 
     public function deletePost(Request $request) {
-        $request = Post::find(($request->id));
-        $request->categories()->detach();
-        $request->delete();
+        self::postRepository()->delete($request->id);
         return redirect()->back();
     }
 
     public function newPost(FormRequestPost $request) {
         if($request->method() == 'POST') {
             $data = $request->all();
-            Post::create($data)->categories()->attach($request->categories);
+            self::postRepository()->createAndAttachCategories($data, $request->categories);
         }
         return redirect()->back();
     }
 
     public function show($id){
+        // dd(self::commentariesRepository()->allWithEager()->find($id));
         return Inertia::render('Post/SelectedPost',[
-            'post'=> Post::with('owner', 'categories', 'commentaries.user')->get()->find($id),
-            'owners'=>Commentary::with('user')->get(),
+            'post'=>self::postRepository()->allWithEager()->find($id),
+            'commentaries'=>self::commentariesRepository()->getCommentsByPost([$id]),
         ] );
     }
 
     public function updatePost(FormRequestPost $request) {
         if($request->method() == 'PUT') {
-            $data = $request;
-            $request = Post::find(($request->id));
-            $request->categories()->detach();
-            $request->update($data->all());
-            $request->categories()->attach($data->categories);
+            self::postRepository()->updateAndAttachCategories($request);
         }
         return redirect()->back();
     }

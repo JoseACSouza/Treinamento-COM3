@@ -16,11 +16,13 @@ export default (commentInfo) => {
         delete: destroy,
         processing,
         reset,
-    } = useForm();
+    } = useForm({
+        postId: postId,
+        commentId: commentId,
+    });
 
     const deletePost = (e) => {
         e.preventDefault();
-        data.id = postId;
         destroy(route('commentaries.destroy', commentId ), {
             preserveScroll: true,
             onSuccess: () => closeModal(),

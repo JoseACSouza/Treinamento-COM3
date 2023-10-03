@@ -2,20 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Commentary;
-use App\Models\Post;
-use App\Models\User;
+use App\Interfaces\RepositoriesInterface;
+use App\Repositories\CommentariesRepository;
+use App\Repositories\PostRepository;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class CommentaryController extends Controller
 {
+    private static function commentariesRepository():CommentariesRepository|RepositoriesInterface{
+        return new CommentariesRepository;
+    }
+
+    private static function postsRepository():PostRepository|RepositoriesInterface{
+        return new PostRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        // 
+        //
     }
 
     /**
@@ -30,16 +37,15 @@ class CommentaryController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-        Commentary::create($data);
-        $PostId = $request->post_id;
-        return to_route('post.show', $PostId);
+        self::commentariesRepository()->create($request->all());
+        self::commentariesRepository()->sendEmailToPostOwner(self::postsRepository()->allWithEager()->find($request->post_id)->owner);
+        return to_route('post.show', $request->post_id);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Commentary $commentary)
+    public function show($commentary)
     {
         //
     }
@@ -47,7 +53,7 @@ class CommentaryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Commentary $commentary)
+    public function edit($commentary)
     {
         //
     }
@@ -55,19 +61,17 @@ class CommentaryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Commentary $commentary)
+    public function update(Request $request, $commentary)
     {
-        Commentary::find($commentary->id)->update($request->all());
+        self::commentariesRepository()->find($commentary->id)->update($request->all());
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Commentary $commentary)
+    public function destroy(Request $request)
     {
-        $PostId = $commentary->post_id;
-        $commentary = Commentary::find($commentary->id);
-        $commentary->delete();
-        return to_route('post.show', $PostId);
+        self::commentariesRepository()->delete($request->commentId);
+        return to_route('post.show', $request->postId);
     }
 }

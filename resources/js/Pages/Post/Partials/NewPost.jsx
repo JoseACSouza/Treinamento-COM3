@@ -33,11 +33,10 @@ export default ({auth, allCategories})=>{
             }
         }).filter((item)=> item!== undefined);
 
-        console.log(selectedCategories);
         setData('categories', selectedCategories);
       };
 
-      function handleSubmit(e) {
+    const handleSubmit = (e) => {
         e.preventDefault();
         post('post/new');
         reset();

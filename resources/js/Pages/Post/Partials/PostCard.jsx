@@ -101,7 +101,7 @@ export default (postInfo) => {
                         <div className="flex items-center justify-end">
 
                             <Link
-                                href={`news/${id}`}
+                                href={`/news/${id}`}
                                 method="get"
                                 as="button"
                                 type="button"

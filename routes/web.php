@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/news/{id}', [PostController::class, 'show'])->name('post.show');
     Route::delete('/post/delete', [PostController::class, 'deletePost'])->name('post.destroy');
     Route::post('/post/new', [PostController::class, 'newPost'])->name('post.new');
+    Route::post('/post/filter', [PostController::class, 'filter'])->name('post.filter');
     Route::put('/post', [PostController::class, 'updatePost'])->name('post.update');
 
 

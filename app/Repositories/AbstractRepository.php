@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Repository;
+namespace App\Repositories;
 
-use App\Interfaces\RepositoryInterface;
+use App\Interfaces\RepositoriesInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-abstract class AbstractRepository implements RepositoryInterface
+abstract class AbstractRepository implements RepositoriesInterface
 {
     protected static $model;
 
@@ -28,7 +28,7 @@ abstract class AbstractRepository implements RepositoryInterface
         return self::loadModel()::query()->create($attributes);
     }
 
-    public static function delete(int $id):int{
+    public static function delete(int $id):int {
         return self::loadModel()::query()->where(['id' => $id])->delete();
     }
 
