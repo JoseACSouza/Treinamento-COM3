@@ -6,6 +6,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 /*
@@ -38,13 +39,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 
-    Route::get('/news', [PostController::class, 'index'])->name('post');
-    Route::get('/news/{id}', [PostController::class, 'show'])->name('post.show');
-    Route::delete('/post/delete', [PostController::class, 'deletePost'])->name('post.destroy');
-    Route::post('/post/new', [PostController::class, 'newPost'])->name('post.new');
-    Route::post('/post/filter', [PostController::class, 'filter'])->name('post.filter');
-    Route::put('/post', [PostController::class, 'updatePost'])->name('post.update');
+    // Route::get('/news', [PostController::class, 'index'])->name('post');
+    // Route::get('/news/{id}', [PostController::class, 'show'])->name('post.show');
+    // Route::delete('/post/delete', [PostController::class, 'deletePost'])->name('post.destroy');
+    // Route::post('/post/new', [PostController::class, 'newPost'])->name('post.new');
+    // Route::put('/post', [PostController::class, 'updatePost'])->name('post.update');
+    Route::resource('posts', PostController::class);
 
+    Route::get('/download/{file}', function ($file) {
+        $filePath = explode(',', $file);
+        $file_path = public_path("{$filePath[1]}/{$filePath[2]}/{$filePath[3]}");
+        return response()->download($file_path);
+    })->name('download');
 
 
     Route::resource('categories', CategoryController::class);

@@ -6,11 +6,14 @@ import SecondaryButton from "../../../Components/SecondaryButton";
 import UpdatePost from "./UpdatePost";
 import ButtonCard from "../../../Components/ButtonCard";
 import CommentariesIcon from "../../Commentaries/Partials/commentariesIcon";
+import FilePreview from "@/Components/FilePreview";
+import DropdownFiles from "@/Components/DropdownFiles";
+import ImageCard from "@/Components/ImageCard";
 
 export default (postInfo) => {
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
     const [confirmingUserUpdation, setConfirmingUserUpdation] = useState(false);
-    const { id, subject, content, owner, user, ownerId, categories, selectPost, countCommentaries } = postInfo;
+    const { id, subject, content, owner, user, ownerId, categories, selectPost, countCommentaries, file } = postInfo;
 
     const {
         data,
@@ -22,7 +25,7 @@ export default (postInfo) => {
     const deletePost = (e) => {
         e.preventDefault();
         data.id = id;
-        destroy(route('post.destroy'), {
+        destroy(`/posts/${id}`, {
             preserveScroll: true,
             onSuccess: () => closeModal(),
             onError: () => <p>Woops! Ocorreu algum erro na exclusão do Post</p>,
@@ -64,7 +67,7 @@ export default (postInfo) => {
                                 }
                             </div>
                         </div>
-                        {(owner === user.name && ownerId == user.id && selectPost === false) ?
+                        {(owner === user.name && ownerId == user.id && !selectPost) ?
                             <div className=" flex justify-end">
                                 <ButtonCard
                                     type="button"
@@ -83,6 +86,28 @@ export default (postInfo) => {
                     </div>
                 </div>
                 <p className="my-2 bg-sky-600/20 p-1 rounded">{content}</p>
+                {console.log(file)}
+                {
+                    file ?
+                        selectPost ? (
+                            <ImageCard
+                                file={file}
+                            />)
+                            :
+                            <><hr></hr><DropdownFiles>
+                                    <DropdownFiles.Trigger>
+                                        Visualizar Anexo
+                                    </DropdownFiles.Trigger>
+                                    <hr></hr>
+                                    <DropdownFiles.Content>
+                                        <FilePreview
+                                            file={file} />
+                                    </DropdownFiles.Content>
+                                </DropdownFiles><hr></hr></>
+                    : ''
+                }
+
+
                 <Modal show={confirmingUserDeletion} onClose={closeModal}>
                     <form onSubmit={deletePost} className="p-6" name="param">
                         <h2 className="text-lg font-medium text-gray-900">
@@ -101,12 +126,12 @@ export default (postInfo) => {
                         <div className="flex items-center justify-end">
 
                             <Link
-                                href={`/news/${id}`}
+                                href={`/posts/${id}`}
                                 method="get"
                                 as="button"
                                 type="button"
                                 className="flex pointer-events-auto rounded-md p-1.5 text-[0.8125rem] font-semibold leading-5 hover:bg-blue-500 mx-1">
-                                <CommentariesIcon/>
+                                <CommentariesIcon />
                                 <p className="text-xs ml-1">{`${countCommentaries} ${countCommentaries === 1 ? 'comentário' : 'comentários'}`}</p>
                             </Link>
                         </div>

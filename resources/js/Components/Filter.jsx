@@ -9,8 +9,9 @@ export default (props) => {
     const { allCategories, owners } = props;
     function handleSubmit(e) {
         e.preventDefault();
-        post('/post/filter');
+        get('/posts');
     }
+    const uniqueOwners = [...new Set(owners)];
     return (<div className="ml-3">
         <form onSubmit={handleSubmit}>
             <label htmlFor="filterCategory" className="mr-3"> Categorias:
@@ -50,7 +51,7 @@ export default (props) => {
             <ButtonCard
                 type="button"
                 className="bg-red-600 ml-3"
-                onClick={()=>get('/news')}
+                onClick={()=>get('/posts')}
             >
                 Limpar Filtros
             </ButtonCard>

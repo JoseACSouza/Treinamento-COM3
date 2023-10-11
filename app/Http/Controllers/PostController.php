@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\PostRepository;
 use App\Http\Requests\FormRequestPost;
 use App\Interfaces\RepositoriesInterface;
 use App\Repositories\CategoriesRepository;
 use App\Repositories\CommentariesRepository;
+use App\Repositories\PostRepository;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -24,51 +24,68 @@ class PostController extends Controller
         return new CategoriesRepository;
     }
 
-
-    public function index() {
+    public function index(Request $request)
+    {
         return Inertia::render('Post/Post',[
-            'posts'=> self::postRepository()->allWithEager(),
-            'allCategories'=>self::categoriesRepository()->all(),
+            'posts'=> $this->postRepository()->allWithEager($request)->paginate(5),
+            'allPostOwners'=> $this->postRepository()->allWithEager(NULL)->get(),
+            'allCategories'=>$this->categoriesRepository()->all(),
         ] );
     }
 
-    public function filter(Request $request) {
-        return Inertia::render('Post/Post',[
-            'posts'=> self::postRepository()->allWithEager(),
-            'allCategories'=>self::categoriesRepository()->all(),
-            'filter'=>$request->all(),
-        ] );
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
     }
 
-    public function deletePost(Request $request) {
-        self::postRepository()->delete($request->id);
-        return redirect()->back();
-    }
-
-    public function newPost(FormRequestPost $request) {
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(FormRequestPost $request)
+    {
         if($request->method() == 'POST') {
-            $data = $request->all();
-            self::postRepository()->createAndAttachCategories($data, $request->categories);
+            $this->postRepository()->createAndAttachCategories($request);
         }
         return redirect()->back();
     }
 
-    public function show($id){
-        // dd(self::commentariesRepository()->allWithEager()->find($id));
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
         return Inertia::render('Post/SelectedPost',[
-            'post'=>self::postRepository()->allWithEager()->find($id),
-            'commentaries'=>self::commentariesRepository()->getCommentsByPost([$id]),
+            'post'=>$this->postRepository()->allWithEager(NULL)->find($id),
+            'commentaries'=>$this->commentariesRepository()->getCommentsByPost([$id])->paginate(5),
         ] );
     }
 
-    public function updatePost(FormRequestPost $request) {
-        if($request->method() == 'PUT') {
-            self::postRepository()->updateAndAttachCategories($request);
-        }
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(FormRequestPost $request)
+    {
+        $this->postRepository()->updateAndAttachCategories($request);
         return redirect()->back();
     }
 
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $this->postRepository()->deleteAttachments($id);
+        return redirect()->back();
+    }
 }
-
-
-

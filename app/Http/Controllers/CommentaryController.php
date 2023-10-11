@@ -37,9 +37,9 @@ class CommentaryController extends Controller
      */
     public function store(Request $request)
     {
-        self::commentariesRepository()->create($request->all());
-        self::commentariesRepository()->sendEmailToPostOwner(self::postsRepository()->allWithEager()->find($request->post_id)->owner);
-        return to_route('post.show', $request->post_id);
+        self::commentariesRepository()->createAndAttach($request);
+        self::commentariesRepository()->sendEmailToPostOwner(self::postsRepository()->allWithEager(NULL)->find($request->post_id)->owner);
+        return to_route('posts.show', $request->post_id);
     }
 
     /**
@@ -71,7 +71,7 @@ class CommentaryController extends Controller
      */
     public function destroy(Request $request)
     {
-        self::commentariesRepository()->delete($request->commentId);
-        return to_route('post.show', $request->postId);
+        self::commentariesRepository()->deleteAttachments($request);
+        return to_route('posts.show', $request->postId);
     }
 }

@@ -33,4 +33,9 @@ class Post extends Model
         return $this->hasMany(Commentary::class);
     }
 
+    public function storages()
+    {
+        return $this->morphToMany(Storage::class, 'storagables');
+    }
+
 }

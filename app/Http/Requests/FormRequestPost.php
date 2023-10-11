@@ -28,6 +28,7 @@ class FormRequestPost extends FormRequest
                 'content'=>['required','string'],
                 'users_id'=>['required'],
                 'categories'=>['required'],
+                'storage'=>['nullable', 'max:5120'],
             ];
         }
         return $request;

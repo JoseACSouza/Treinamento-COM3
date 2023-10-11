@@ -2,20 +2,22 @@ import { useForm } from "@inertiajs/react";
 import TextAreaInput from "../../../Components/TextAreaInput";
 import TextInput from "../../../Components/TextInput";
 import ButtonCard from "../../../Components/ButtonCard";
+import InputLabel from "@/Components/InputLabel";
 
 
 export default ({ auth, postInfo, className }) => {
-    const { data, setData, post, errors, reset, get } = useForm({
+    const { data, setData, post, errors, reset, get, progress } = useForm({
         'content': '',
         'user_id': auth.user.id,
         'post_id': postInfo.id,
+        'storage':null,
     });
 
     function handleSubmit(e) {
         e.preventDefault();
-        post('/commentaries',{
-        preserveScroll: true,
-        onSuccess: () => get(route('post.show', postInfo.id)),
+        post('/commentaries', {
+            preserveScroll: true,
+            onSuccess: () => get(route('posts.show', postInfo.id)),
         });
         reset();
     }
@@ -35,10 +37,18 @@ export default ({ auth, postInfo, className }) => {
                     value={auth.user.name}
                     disabled
                 />
+                <InputLabel className="flex flex-col"> Adicionar anexo:
+                    <input type="file" filename={data.storage} onChange={e => setData('storage', e.target.files[0])} />
+                    {progress && (
+                        <progress value={progress.percentage} max="100">
+                            {progress.percentage}%
+                        </progress>
+                    )}
+                </InputLabel>
                 <ButtonCard
                     type="button"
                     className="mr-2 h-10 bg-red-600 self-end"
-                    onClick={()=>get(`/news/${postInfo.id}`)}
+                    onClick={() => get(`/posts/${postInfo.id}`)}
                 > Cancelar
                 </ButtonCard>
                 <ButtonCard

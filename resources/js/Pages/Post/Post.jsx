@@ -1,11 +1,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import PostCard from './Partials/PostCard';
 import NewPost from './Partials/NewPost';
 import Filter from '@/Components/Filter';
-import FilteredPost from './Partials/FilteredPost';
 
-export default function Post({ auth, posts, allCategories, filter }) {
+export default function Post({ auth, posts, allCategories, allPostOwners }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -15,21 +14,15 @@ export default function Post({ auth, posts, allCategories, filter }) {
             <NewPost auth={auth} allCategories={allCategories} />
             <Filter
                 allCategories={allCategories}
-                owners={posts.map((post) => post.owner)}
+                owners={allPostOwners.map((owners) => owners.owner)}
             />
-            {console.log(posts[0].categories.map((a) => a.id))}
+            {console.log(posts)}
             <div className="py-4">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     {
-                        filter ?
-                        <FilteredPost
-                            posts={posts}
-                            auth={auth}
-                            allCategories={allCategories}
-                            filter={filter}
-                        /> :
-                        posts.map((post, index) => {
-                            const { id, subject, content, owner, categories, commentaries } = post;
+                        posts.data.map((post, index) => {
+                            const { id, subject, content, owner, categories, commentaries, storages } = post;
+                            console.log(storages);
                             return (
                                 <PostCard
                                     key={index}
@@ -43,9 +36,34 @@ export default function Post({ auth, posts, allCategories, filter }) {
                                     categories={categories}
                                     allCategories={allCategories}
                                     selectPost={false}
+                                    file={storages.length > 0 ? storages[0].file : ''}
                                 />)
                         })
                     }
+                </div>
+                <div className='flex justify-center'>
+                    <Link
+                        href={posts.prev_page_url}
+                        method="get"
+                        as="button"
+                        type="button"
+                        disabled={!posts.prev_page_url}
+                        className="disabled:opacity-75 pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-indigo-500 bg-sky-600">
+                        {'<'}
+                    </Link>
+                    <p
+                        className="ml-4 pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white bg-sky-600">
+                        {posts.current_page}
+                    </p>
+                    <Link
+                        href={posts.next_page_url}
+                        method="get"
+                        as="button"
+                        type="button"
+                        disabled={!posts.next_page_url}
+                        className="disabled:opacity-75 ml-4 pointer-events-auto rounded-md px-3 py-2 text-[0.8125rem] font-semibold leading-5 text-white hover:bg-indigo-500 bg-sky-600">
+                        {'>'}
+                    </Link>
                 </div>
             </div>
         </AuthenticatedLayout>

@@ -6,14 +6,14 @@ import TextAreaInput from "../../../Components/TextAreaInput";
 import InputLabel from "../../../Components/InputLabel";
 import Checkbox from "../../../Components/Checkbox";
 
-
-export default ({auth, allCategories})=>{
-    const { data, setData, post, errors, reset } = useForm({
+export default ({ auth, allCategories }) => {
+    const { data, setData, post, errors, reset, progress } = useForm({
         'id': '',
         'subject': '',
         'content': '',
         'users_id': auth.user.id,
-        'categories':[],
+        'categories': [],
+        'storage': null,
     });
 
     const [checkedState, setCheckedState] = useState(
@@ -22,80 +22,88 @@ export default ({auth, allCategories})=>{
 
     const handleOnChange = (position) => {
         const updatedCheckedState = checkedState.map((item, index) =>
-          index === position ? !item : item
+            index === position ? !item : item
         );
 
         setCheckedState(updatedCheckedState);
 
-        const selectedCategories = updatedCheckedState.map((item, index)=>{
+        const selectedCategories = updatedCheckedState.map((item, index) => {
             if (item) {
                 return allCategories[index].id;
             }
-        }).filter((item)=> item!== undefined);
+        }).filter((item) => item !== undefined);
 
         setData('categories', selectedCategories);
-      };
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post('post/new');
+        post('/posts');
         reset();
-      }
+    }
 
-    return(
+    return (
         <div className="bg-sky-500/20 rounded-lg p-3 m-3 h-76">
             <form onSubmit={handleSubmit}>
                 <div className="flex flex-col item-start ">
-                <TextInput
-                    className="max-w-xs bg-transparent text-sm read-only border-0 p-0 "
-                    value={ auth.user.name }
-                    disabled
-                />
-                <InputLabel className="flex flex-col my-2"> Título:
                     <TextInput
-                    className="max-w-md bg-[#FFFFFF]/60 text-sm font-bold text-xl"
-                    placeholder="Escreva um título para seu post"
-                    onChange={e => setData('subject', e.target.value)}
-                    value={ data.subject }
-                    id="subject"
-                />
-                </InputLabel>
-                {errors.subject && <div className="text-red-400 text-sm">{errors.subject}</div>}
-                <div className="flex flex-col my-2 block font-medium text-sm text-gray-700"> Categorias:
-                    <div className="flex">
-                    {allCategories.map((category, index)=>{
-                        return(
-                            <InputLabel key={index} htmlFor={category.id} className="ml-2 flex justify-content">
-                                <Checkbox
-                                    id={category.id}
-                                    name={category.id}
-                                    value={category.id}
-                                    checked={checkedState[index]}
-                                    onChange={() => handleOnChange(index)}
-                                    className="mr-1 mt-0.5"
-                                />
-                                {category.category}
-                            </InputLabel>
-                        )
-                    })}
+                        className="max-w-xs bg-transparent text-sm read-only border-0 p-0 "
+                        value={auth.user.name}
+                        disabled
+                    />
+                    <InputLabel className="flex flex-col my-2"> Título:
+                        <TextInput
+                            className="max-w-md bg-[#FFFFFF]/60 text-sm font-bold text-xl"
+                            placeholder="Escreva um título para seu post"
+                            onChange={e => setData('subject', e.target.value)}
+                            value={data.subject}
+                            id="subject"
+                        />
+                    </InputLabel>
+                    {errors.subject && <div className="text-red-400 text-sm">{errors.subject}</div>}
+                    <div className="flex flex-col my-2 block font-medium text-sm text-gray-700"> Categorias:
+                        <div className="flex">
+                            {allCategories.map((category, index) => {
+                                return (
+                                    <InputLabel key={index} htmlFor={category.id} className="ml-2 flex justify-content">
+                                        <Checkbox
+                                            id={category.id}
+                                            name={category.id}
+                                            value={category.id}
+                                            checked={checkedState[index]}
+                                            onChange={() => handleOnChange(index)}
+                                            className="mr-1 mt-0.5"
+                                        />
+                                        {category.category}
+                                    </InputLabel>
+                                )
+                            })}
+                        </div>
+                        {errors.categories && <div className="text-red-400 text-sm">{errors.categories}</div>}
                     </div>
-                    {errors.categories && <div className="text-red-400 text-sm">{errors.categories}</div>}
-                </div>
                 </div>
                 <div className="flex flex-col">
                     <InputLabel className="flex flex-col"> Conteúdo do post:
                         <TextAreaInput
                             placeholder="Escreva algo legal"
                             onChange={e => setData('content', e.target.value)}
-                            value={ data.content }
+                            value={data.content}
                             id="content"
                         />
                     </InputLabel>
                     {errors.content && <div className="text-red-400 text-sm">{errors.content}</div>}
+                    <InputLabel className="flex flex-col"> Adicionar anexo:
+                        <input type="file" filename={data.storage} onChange={e => setData('storage', e.target.files[0])} />
+                        {progress && (
+                            <progress value={progress.percentage} max="100">
+                                {progress.percentage}%
+                            </progress>
+                        )}
+                    </InputLabel>
                     <ButtonCard
                         type="submit"
                         className="mr-2 w-20 bg-cyan-600 self-end"
-                        > Postar
+                    > Postar
                     </ButtonCard>
                 </div>
             </form>
