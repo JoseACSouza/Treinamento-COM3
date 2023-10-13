@@ -11,7 +11,10 @@ export default (props) => {
         e.preventDefault();
         get('/posts');
     }
-    const uniqueOwners = [...new Set(owners)];
+
+    const ownersUnique = owners.map((item, index) => owners[index-1] && owners[index].id === owners[index-1].id ? null : item)
+    .filter((item)=> item !== null);
+
     return (<div className="ml-3">
         <form onSubmit={handleSubmit}>
             <label htmlFor="filterCategory" className="mr-3"> Categorias:
@@ -37,7 +40,7 @@ export default (props) => {
                     value={data.filterOwner}
                 >
                     {
-                        owners.map((item, index) => <option key={index} value={item.id}>{item.name}</option>)
+                        ownersUnique.map((item, index)=><option key={index} value={item.id}>{item.name}</option>)
                     }
                     <option value=''>Todos</option>
                 </select>
