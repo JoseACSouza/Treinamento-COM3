@@ -38,12 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-
-    // Route::get('/news', [PostController::class, 'index'])->name('post');
-    // Route::get('/news/{id}', [PostController::class, 'show'])->name('post.show');
-    // Route::delete('/post/delete', [PostController::class, 'deletePost'])->name('post.destroy');
-    // Route::post('/post/new', [PostController::class, 'newPost'])->name('post.new');
-    // Route::put('/post', [PostController::class, 'updatePost'])->name('post.update');
+    Route::get('posts/export/{exportType}', [PostController::class, 'export']);
     Route::resource('posts', PostController::class);
 
     Route::get('/download/{file}', function ($file) {

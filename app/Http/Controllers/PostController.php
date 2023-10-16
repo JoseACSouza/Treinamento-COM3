@@ -7,8 +7,13 @@ use App\Interfaces\RepositoriesInterface;
 use App\Repositories\CategoriesRepository;
 use App\Repositories\CommentariesRepository;
 use App\Repositories\PostRepository;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Writer\Pdf as WriterPdf;
+use PhpOffice\PhpSpreadsheet\Writer\Pdf\Dompdf;
 
 class PostController extends Controller
 {
@@ -32,6 +37,13 @@ class PostController extends Controller
             'allCategories'=>$this->categoriesRepository()->all(),
         ] );
     }
+
+    public function export(Request $request)
+    {
+        return $this->postRepository()->exportsPostsLog($request);
+    }
+
+
 
     /**
      * Show the form for creating a new resource.

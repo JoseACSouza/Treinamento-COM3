@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Exports\PostExport;
 use App\Models\Post;
 use App\Models\Storage;
+use Illuminate\Support\Facades\App;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PostRepository extends AbstractRepository
 {
@@ -47,6 +50,18 @@ class PostRepository extends AbstractRepository
             $data->categories()->attach($postCategories);
         } else {
             self::loadModel()::create($data)->categories()->attach($postCategories);
+        }
+    }
+
+    public static function exportsPostsLog($request)
+    {
+        if($request->exportType == 'excel'){
+            return Excel::download(new PostExport, 'posts-log.xlsx');
+        } elseif($request->exportType == 'pdf'){
+            $pdf = App::make('dompdf.wrapper');
+            $posts = self::all();
+            $pdf->loadView('PostLog', compact('posts'));
+            return $pdf->download('postsLog.pdf');
         }
     }
 
