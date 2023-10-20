@@ -5,10 +5,12 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link } from '@inertiajs/react';
 
-export default function Authenticated({ user, header, children }) {
+export default function Authenticated({ user, header, children, roles = null }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
+    console.log(roles);
     return (
+
         <div className="min-h-screen bg-gray-100">
             <nav className="bg-white border-b border-gray-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -27,6 +29,55 @@ export default function Authenticated({ user, header, children }) {
                                 <NavLink href={route('posts.index')} active={route().current('posts.index')}>
                                     Posts
                                 </NavLink>
+                                {
+                                    roles && roles.includes('admin') &&
+                                    <>
+                                        <NavLink href={route('categories.index')} active={route().current('categories.index')}>
+                                            Categories
+                                        </NavLink>
+                                        <Dropdown>
+                                            <Dropdown.Trigger>
+                                                <span className="inline-flex pt-4 rounded-md">
+                                                    <button
+                                                        type="button"
+                                                        className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+                                                    >
+                                                        Export Post Log
+
+                                                        <svg
+                                                            className="ml-2 -mr-0.5 h-4 w-4"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 20 20"
+                                                            fill="currentColor"
+                                                        >
+                                                            <path
+                                                                fillRule="evenodd"
+                                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                                clipRule="evenodd"
+                                                            />
+                                                        </svg>
+                                                    </button>
+                                                </span>
+                                            </Dropdown.Trigger>
+
+                                            <Dropdown.Content>
+                                                <a
+                                                className="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out "
+                                                href={route('postlog.export', 'pdf')}
+                                                >
+                                                    PDF
+                                                </a>
+                                                <a
+                                                className="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out "
+                                                href={route('postlog.export', 'excel')
+                                            }>
+                                                    Excel
+                                                </a>
+                                            </Dropdown.Content>
+                                        </Dropdown>
+                                    </>
+
+                                }
                             </div>
                         </div>
 

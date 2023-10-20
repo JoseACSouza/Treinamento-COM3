@@ -13,8 +13,8 @@ import ImageCard from "@/Components/ImageCard";
 export default (postInfo) => {
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
     const [confirmingUserUpdation, setConfirmingUserUpdation] = useState(false);
-    const { id, subject, content, owner, user, ownerId, categories, selectPost, countCommentaries, file } = postInfo;
-
+    const { id, subject, content, owner, user, categories, selectPost, countCommentaries, file, isAdmin } = postInfo;
+console.log(owner.id);
     const {
         data,
         delete: destroy,
@@ -53,7 +53,7 @@ export default (postInfo) => {
                 previous={postInfo}
             /> : <>
                 <div>
-                    <h2 className="text-sm">{owner}</h2>
+                    <h2 className="text-sm">{owner.name}</h2>
                     <div className="flex justify-between items-end">
                         <div className="flex flex-col">
                             <h1 className="font-bold text-xl block my-2">{subject}</h1>
@@ -67,7 +67,7 @@ export default (postInfo) => {
                                 }
                             </div>
                         </div>
-                        {(owner === user.name && ownerId == user.id && !selectPost) ?
+                        {(isAdmin && !selectPost || owner.name === user.name && owner.id == user.id && !selectPost) ?
                             <div className=" flex justify-end">
                                 <ButtonCard
                                     type="button"

@@ -7,13 +7,9 @@ use App\Interfaces\RepositoriesInterface;
 use App\Repositories\CategoriesRepository;
 use App\Repositories\CommentariesRepository;
 use App\Repositories\PostRepository;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Inertia\Inertia;
-use Maatwebsite\Excel\Facades\Excel;
-use PhpOffice\PhpSpreadsheet\Writer\Pdf as WriterPdf;
-use PhpOffice\PhpSpreadsheet\Writer\Pdf\Dompdf;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
@@ -40,6 +36,7 @@ class PostController extends Controller
 
     public function export(Request $request)
     {
+        Gate::authorize('verifyAdmin');
         return $this->postRepository()->exportsPostsLog($request);
     }
 

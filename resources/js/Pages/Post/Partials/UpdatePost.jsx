@@ -7,12 +7,12 @@ import InputLabel from "../../../Components/InputLabel";
 import Checkbox from "../../../Components/Checkbox";
 
 export default ({previous})=>{
-    const { subject, content, user, id, categories, allCategories, storage } = previous;
+    const { subject, content, owner, id,categories, allCategories, storage } = previous;
     const { data, setData, put, processing, errors, get, progress } = useForm({
         id: id,
         subject: subject,
         content: content,
-        users_id: user.id,
+        users_id: owner.id,
         'categories': categories,
         'storage':null,
       });
@@ -54,7 +54,7 @@ export default ({previous})=>{
                 <div className="flex flex-col item-start ">
                 <TextInput
                     className="max-w-xs bg-transparent text-sm read-only border-0"
-                    value={ user.name }
+                    value={ owner.name }
                     disabled
                 />
                 <InputLabel className="flex flex-col my-2"> Título:

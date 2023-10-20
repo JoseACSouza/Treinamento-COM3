@@ -59,9 +59,10 @@ class PostRepository extends AbstractRepository
             return Excel::download(new PostExport, 'posts-log.xlsx');
         } elseif($request->exportType == 'pdf'){
             $pdf = App::make('dompdf.wrapper');
-            $posts = self::all();
+            $posts = self::allWithEager(NULL)->get();
+            $pdf->getDomPDF()->set_option("enable_php", true);
             $pdf->loadView('PostLog', compact('posts'));
-            return $pdf->download('postsLog.pdf');
+            return $pdf->download('postlog.pdf');
         }
     }
 

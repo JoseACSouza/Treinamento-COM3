@@ -9,7 +9,14 @@ export default function Post({ auth, posts, allCategories, allPostOwners }) {
         <AuthenticatedLayout
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Posts</h2>}
+            roles = {auth.roles}
         >
+            {
+                console.log(auth)
+            }
+            {
+                console.log(auth.user)
+            }
             <Head title="Post" />
             <NewPost auth={auth} allCategories={allCategories} />
             <Filter
@@ -29,13 +36,13 @@ export default function Post({ auth, posts, allCategories, allPostOwners }) {
                                     countCommentaries={commentaries.length}
                                     subject={subject}
                                     content={content}
-                                    owner={owner.name}
+                                    owner={owner}
                                     user={auth.user}
                                     id={id}
-                                    ownerId={owner.id}
                                     categories={categories}
                                     allCategories={allCategories}
                                     selectPost={false}
+                                    isAdmin = { auth.roles && auth.roles.includes('admin') ? true : false }
                                     file={storages.length > 0 ? storages[0].file : ''}
                                 />)
                         })

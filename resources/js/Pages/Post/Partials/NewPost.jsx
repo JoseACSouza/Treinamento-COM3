@@ -7,7 +7,7 @@ import InputLabel from "../../../Components/InputLabel";
 import Checkbox from "../../../Components/Checkbox";
 
 export default ({ auth, allCategories }) => {
-    const { data, setData, post, errors, reset, progress } = useForm({
+    const { data, setData, post, errors, reset, progress, get } = useForm({
         'id': '',
         'subject': '',
         'content': '',
@@ -39,6 +39,7 @@ export default ({ auth, allCategories }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         post('/posts');
+        get('/posts');
         reset();
     }
 
