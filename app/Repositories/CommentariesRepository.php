@@ -47,4 +47,16 @@ class CommentariesRepository extends AbstractRepository
             $request->delete();
         }
     }
+
+    public static function deleteApi($id)
+    {
+        $request = self::loadModel()::find($id);
+        if($request->storages()){
+            $request->storages()->delete();
+            $request->delete();
+        } else {
+            $request->delete();
+        }
+    }
+
 }
