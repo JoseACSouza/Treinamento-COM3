@@ -3,54 +3,98 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FormRequestPost;
-use App\Models\Category;
-use App\Models\Post;
-use App\Models\User;
+use App\Interfaces\RepositoriesInterface;
+use App\Repositories\CategoriesRepository;
+use App\Repositories\CommentariesRepository;
+use App\Repositories\PostRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
-    public function __construct(Post $post)
-    {
-        $this->post = $post;
+    private static function postRepository():PostRepository|RepositoriesInterface{
+        return new PostRepository;
     }
 
-    public function index() {
+    private static function commentariesRepository():CommentariesRepository|RepositoriesInterface{
+        return new CommentariesRepository;
+    }
+
+    private static function categoriesRepository():CategoriesRepository|RepositoriesInterface{
+        return new CategoriesRepository;
+    }
+
+    public function index(Request $request)
+    {
         return Inertia::render('Post/Post',[
-            'posts'=> Post::with('owner','categories')->get(),
-            'allCategories'=>Category::all(),
+            'posts'=> $this->postRepository()->allWithEager($request)->paginate(5),
+            'allPostOwners'=> $this->postRepository()->allWithEager(NULL)->get(),
+            'allCategories'=>$this->categoriesRepository()->all(),
         ] );
     }
 
-    public function deletePost(Request $request) {
-        $request = Post::find(($request->id));
-        $request->categories()->detach();
-        $request->delete();
-        return redirect()->back();
+    public function export(Request $request)
+    {
+        Gate::authorize('verifyAdmin');
+        return $this->postRepository()->exportsPostsLog($request);
     }
 
-    public function newPost(FormRequestPost $request) {
+
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(FormRequestPost $request)
+    {
         if($request->method() == 'POST') {
-            $data = $request->all();
-            Post::create($data)->categories()->attach($request->categories);
+            $this->postRepository()->createAndAttachCategories($request);
         }
         return redirect()->back();
     }
 
-    public function updatePost(FormRequestPost $request) {
-        if($request->method() == 'PUT') {
-            $data = $request;
-            $request = Post::find(($request->id));
-            $request->categories()->detach();
-            $request->update($data->all());
-            $request->categories()->attach($data->categories);
-        }
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        return Inertia::render('Post/SelectedPost',[
+            'post'=>$this->postRepository()->allWithEager(NULL)->find($id),
+            'commentaries'=>$this->commentariesRepository()->getCommentsByPost([$id])->paginate(5),
+        ] );
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(FormRequestPost $request)
+    {
+        $this->postRepository()->updateAndAttachCategories($request);
         return redirect()->back();
     }
 
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $this->postRepository()->deleteAttachments($id);
+        return redirect()->back();
+    }
 }
-
-
-

@@ -5,6 +5,7 @@ export default function Dashboard({ auth }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
+            roles={auth.roles}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">{auth.user.name}</h2>}
         >
             <Head title="Dashboard" />

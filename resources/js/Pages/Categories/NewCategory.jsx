@@ -15,9 +15,11 @@ export default ({auth})=>{
         e.preventDefault();
         post('/categories');
       }
+    console.log('a');
     return (
         <AuthenticatedLayout
             user={auth.user}
+            roles={auth.roles}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">New Category</h2>}
         >
             <Head title="Nova Categoria" />

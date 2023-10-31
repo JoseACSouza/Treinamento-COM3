@@ -7,11 +7,12 @@ export default ({ auth, categories }) => {
     return (
         <AuthenticatedLayout
             user={auth.user}
+            roles={auth.roles}
             header={
                 <div className="flex justify-between">
                     <h2 className="font-semibold text-xl text-gray-800 leading-tight">Categories</h2>
                     <Link
-                        href="categories/create"
+                        href='/categories/create'
                         method="get"
                         as="button"
                         type="button"

@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentaryController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 /*
@@ -22,8 +24,6 @@ Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
     ]);
 });
 
@@ -36,15 +36,19 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::get('posts/export/{exportType}', [PostController::class, 'export'])->name('postlog.export');
+    Route::resource('posts', PostController::class);
 
-    Route::get('/news', [PostController::class, 'index'])->name('post');
-    Route::delete('/post/delete', [PostController::class, 'deletePost'])->name('post.destroy');
-    Route::post('/post/new', [PostController::class, 'newPost'])->name('post.new');
-    Route::put('/post', [PostController::class, 'updatePost'])->name('post.update');
-
+    Route::get('/download/{file}', function ($file) {
+        $filePath = explode(',', $file);
+        $file_path = public_path("{$filePath[1]}/{$filePath[2]}/{$filePath[3]}");
+        return response()->download($file_path);
+    })->name('download');
 
 
     Route::resource('categories', CategoryController::class);
+
+    Route::resource('commentaries', CommentaryController::class);
 });
 
 require __DIR__.'/auth.php';

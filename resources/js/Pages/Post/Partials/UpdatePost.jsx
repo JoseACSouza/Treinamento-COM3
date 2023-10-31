@@ -1,19 +1,20 @@
 import { useForm } from "@inertiajs/react";
 import { useState } from "react";
-import TextInput from "./TextInput";
-import ButtonCard from "./ButtonCard";
-import TextAreaInput from "./TextAreaInput";
-import InputLabel from "./InputLabel";
-import Checkbox from "./Checkbox";
+import TextInput from "../../../Components/TextInput";
+import ButtonCard from "../../../Components/ButtonCard";
+import TextAreaInput from "../../../Components/TextAreaInput";
+import InputLabel from "../../../Components/InputLabel";
+import Checkbox from "../../../Components/Checkbox";
 
 export default ({previous})=>{
-    const { subject, content, user, id, categories, allCategories } = previous;
-    const { data, setData, put, processing, errors, get } = useForm({
+    const { subject, content, owner, id,categories, allCategories, storage } = previous;
+    const { data, setData, put, processing, errors, get, progress } = useForm({
         id: id,
         subject: subject,
         content: content,
-        users_id: user.id,
+        users_id: owner.id,
         'categories': categories,
+        'storage':null,
       });
 
       const [checkedState, setCheckedState] = useState(
@@ -37,14 +38,14 @@ export default ({previous})=>{
         setData('categories', selectedCategories);
       };
 
-      function handleSubmit(e) {
+      const handleSubmit = async (e) => {
         e.preventDefault();
-        put('post');
+        await put(`/posts/${data.id}`);
         cancelar();
       }
 
-      function cancelar(){
-        get('news');
+      const cancelar = ()=>{
+        get('posts');
       }
 
     return(
@@ -53,7 +54,7 @@ export default ({previous})=>{
                 <div className="flex flex-col item-start ">
                 <TextInput
                     className="max-w-xs bg-transparent text-sm read-only border-0"
-                    value={ user.name }
+                    value={ owner.name }
                     disabled
                 />
                 <InputLabel className="flex flex-col my-2"> Título:
@@ -96,7 +97,15 @@ export default ({previous})=>{
                             id="content"
                         />
                     </InputLabel>
-
+                    {errors.content && <div className="text-red-400 text-sm">{errors.content}</div>}
+                    <InputLabel className="flex flex-col"> Adicionar anexo:
+                        <input type="file" filename={data.storage} onChange={e => setData('storage', e.target.files[0])} />
+                        {progress && (
+                            <progress value={progress.percentage} max="100">
+                                {progress.percentage}%
+                            </progress>
+                        )}
+                    </InputLabel>
                     <div className="flex flex-row self-end">
 
                         <ButtonCard
